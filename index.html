@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Increment Counter</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #eef2f7;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 40px 60px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-sizing: border-box;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 2.2em;
+        }
+        #counter-value {
+            font-size: 5em;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #007bff;
+            display: block; /* Ensure it takes its own line */
+            min-width: 1em; /* Prevent layout shift with large numbers */
+        }
+        #increment-btn {
+            padding: 15px 35px;
+            font-size: 1.3em;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            outline: none;
+        }
+        #increment-btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        #increment-btn:active {
+            background-color: #004085;
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Counter App</h1>
+        <div id="counter-value">0</div>
+        <button id="increment-btn">Increment</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const counterValueElement = document.querySelector('#counter-value');
+            const incrementButton = document.querySelector('#increment-btn');
+
+            // Initialize counter from the DOM or default to 0
+            let counter = parseInt(counterValueElement.textContent, 10) || 0;
+
+            // Update the display to ensure it's a number
+            counterValueElement.textContent = counter;
+
+            if (incrementButton && counterValueElement) {
+                incrementButton.addEventListener('click', () => {
+                    counter++;
+                    counterValueElement.textContent = counter;
+                });
+            } else {
+                console.error("Required elements #increment-btn or #counter-value not found.");
+                // Optionally provide user feedback for critical errors
+                if (counterValueElement) {
+                    counterValueElement.textContent = "Error!";
+                    counterValueElement.style.color = "red";
+                }
+            }
+        });
+    </script>
+</body>
+</html>
