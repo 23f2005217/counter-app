@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Increment Counter</title>
+    <title>Simple Calculator</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -22,7 +22,7 @@
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             text-align: center;
-            max-width: 400px;
+            max-width: 450px; /* Slightly wider to accommodate buttons */
             width: 90%;
             border: 1px solid #cce7ee;
         }
@@ -38,20 +38,37 @@
             margin-bottom: 40px;
             display: block; /* Ensures it takes full width for centering */
             transition: transform 0.1s ease-out;
+            min-height: 1.2em; /* Prevent layout shift if content changes (e.g., to 'Error') */
+            display: flex; /* Use flex to center content vertically/horizontally */
+            justify-content: center;
+            align-items: center;
         }
         #counter-value.bump {
             transform: scale(1.1);
         }
-        #increment-btn {
-            background-color: #007bff; /* Primary blue for button */
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Two columns */
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .buttons-grid button {
             color: white;
             border: none;
-            padding: 18px 35px;
-            font-size: 1.3em;
+            padding: 18px 25px;
+            font-size: 1.1em;
             border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.1s ease;
             outline: none;
+            min-width: 70px;
+        }
+        /* Specific style for Increment button (primary action) */
+        #increment-btn {
+            background-color: #007bff; /* Primary blue for button */
+            grid-column: span 2; /* Make it span both columns */
+            font-size: 1.3em;
+            padding: 18px 35px; /* Larger padding */
         }
         #increment-btn:hover {
             background-color: #0056b3; /* Darker blue on hover */
@@ -61,34 +78,111 @@
             background-color: #004085; /* Even darker blue on click */
             transform: translateY(0);
         }
+        /* Styles for utility buttons (sqrt, percent) */
+        #sqrt-btn, #percent-btn {
+            background-color: #6c757d; /* Muted color */
+        }
+        #sqrt-btn:hover, #percent-btn:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+        #sqrt-btn:active, #percent-btn:active {
+            background-color: #494f54;
+            transform: translateY(0);
+        }
+        /* Specific style for Clear button */
+        #clear-btn {
+            background-color: #dc3545; /* Red for clear */
+        }
+        #clear-btn:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+        }
+        #clear-btn:active {
+            background-color: #bd2130;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Click to Increment</h1>
+        <h1>Simple Calculator</h1>
         <span id="counter-value">0</span>
-        <button id="increment-btn">Increment Counter</button>
+        <div class="buttons-grid">
+            <button id="increment-btn">Increment (+1)</button>
+            <button id="sqrt-btn">√</button>
+            <button id="percent-btn">%</button>
+            <button id="clear-btn">Clear</button>
+        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            let count = 0;
+            let count = 0; // This will be the current value displayed and operated on.
             const counterValueElement = document.getElementById('counter-value');
             const incrementButton = document.getElementById('increment-btn');
+            const sqrtButton = document.getElementById('sqrt-btn');
+            const percentButton = document.getElementById('percent-btn');
+            const clearButton = document.getElementById('clear-btn');
 
             // Initialize display
             counterValueElement.textContent = count;
 
-            // Add event listener for button click
-            incrementButton.addEventListener('click', () => {
-                count++;
-                counterValueElement.textContent = count;
+            const updateDisplay = (value) => {
+                // Ensure value is a number for internal operations, but display strings like 'Error'
+                if (typeof value === 'number') {
+                    // Use toLocaleString for better number formatting, limit fraction digits
+                    counterValueElement.textContent = value.toLocaleString('en-US', { maximumFractionDigits: 10 });
+                } else {
+                    counterValueElement.textContent = value;
+                }
 
                 // Optional: Add a visual "bump" effect
                 counterValueElement.classList.add('bump');
                 setTimeout(() => {
                     counterValueElement.classList.remove('bump');
                 }, 100);
+            };
+
+            // Add event listener for increment button click (preserves existing check)
+            incrementButton.addEventListener('click', () => {
+                // If the display currently shows an error, reset to 0 before incrementing
+                if (counterValueElement.textContent === 'Error') {
+                    count = 0;
+                }
+                count++;
+                updateDisplay(count);
+            });
+
+            // Add event listener for clear button
+            clearButton.addEventListener('click', () => {
+                count = 0;
+                updateDisplay(count);
+            });
+
+            // Add event listener for square root button
+            sqrtButton.addEventListener('click', () => {
+                // If the display currently shows an error, reset count to 0 first
+                if (counterValueElement.textContent === 'Error') {
+                    count = 0;
+                }
+                if (count < 0) {
+                    updateDisplay('Error');
+                    count = 0; // Reset count to 0 after error to allow new calculations
+                } else {
+                    count = Math.sqrt(count);
+                    updateDisplay(count); // updateDisplay will format it
+                }
+            });
+
+            // Add event listener for percentage button
+            percentButton.addEventListener('click', () => {
+                // If the display currently shows an error, reset count to 0 first
+                if (counterValueElement.textContent === 'Error') {
+                    count = 0;
+                }
+                count = count / 100;
+                updateDisplay(count); // updateDisplay will format it
             });
         });
     </script>
