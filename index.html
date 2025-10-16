@@ -8,92 +8,88 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background-color: #eef2f7;
+            background-color: #e0f2f7; /* Light blue background */
             color: #333;
             line-height: 1.6;
         }
         .container {
             background-color: #ffffff;
-            padding: 40px 60px;
+            padding: 50px;
             border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             text-align: center;
             max-width: 400px;
             width: 90%;
-            box-sizing: border-box;
+            border: 1px solid #cce7ee;
         }
         h1 {
-            color: #2c3e50;
-            margin-bottom: 25px;
+            color: #007bff; /* Primary blue for heading */
+            margin-bottom: 30px;
             font-size: 2.2em;
         }
         #counter-value {
-            font-size: 5em;
-            font-weight: 700;
-            margin-bottom: 30px;
-            color: #007bff;
-            display: block; /* Ensure it takes its own line */
-            min-width: 1em; /* Prevent layout shift with large numbers */
+            font-size: 5em; /* Large font for the counter */
+            font-weight: bold;
+            color: #28a745; /* Green for the value */
+            margin-bottom: 40px;
+            display: block; /* Ensures it takes full width for centering */
+            transition: transform 0.1s ease-out;
+        }
+        #counter-value.bump {
+            transform: scale(1.1);
         }
         #increment-btn {
-            padding: 15px 35px;
-            font-size: 1.3em;
-            cursor: pointer;
-            background-color: #007bff;
+            background-color: #007bff; /* Primary blue for button */
             color: white;
             border: none;
+            padding: 18px 35px;
+            font-size: 1.3em;
             border-radius: 8px;
+            cursor: pointer;
             transition: background-color 0.3s ease, transform 0.1s ease;
             outline: none;
         }
         #increment-btn:hover {
-            background-color: #0056b3;
+            background-color: #0056b3; /* Darker blue on hover */
             transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
         #increment-btn:active {
-            background-color: #004085;
+            background-color: #004085; /* Even darker blue on click */
             transform: translateY(0);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Counter App</h1>
-        <div id="counter-value">0</div>
-        <button id="increment-btn">Increment</button>
+        <h1>Click to Increment</h1>
+        <span id="counter-value">0</span>
+        <button id="increment-btn">Increment Counter</button>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const counterValueElement = document.querySelector('#counter-value');
-            const incrementButton = document.querySelector('#increment-btn');
+            let count = 0;
+            const counterValueElement = document.getElementById('counter-value');
+            const incrementButton = document.getElementById('increment-btn');
 
-            // Initialize counter from the DOM or default to 0
-            let counter = parseInt(counterValueElement.textContent, 10) || 0;
+            // Initialize display
+            counterValueElement.textContent = count;
 
-            // Update the display to ensure it's a number
-            counterValueElement.textContent = counter;
+            // Add event listener for button click
+            incrementButton.addEventListener('click', () => {
+                count++;
+                counterValueElement.textContent = count;
 
-            if (incrementButton && counterValueElement) {
-                incrementButton.addEventListener('click', () => {
-                    counter++;
-                    counterValueElement.textContent = counter;
-                });
-            } else {
-                console.error("Required elements #increment-btn or #counter-value not found.");
-                // Optionally provide user feedback for critical errors
-                if (counterValueElement) {
-                    counterValueElement.textContent = "Error!";
-                    counterValueElement.style.color = "red";
-                }
-            }
+                // Optional: Add a visual "bump" effect
+                counterValueElement.classList.add('bump');
+                setTimeout(() => {
+                    counterValueElement.classList.remove('bump');
+                }, 100);
+            });
         });
     </script>
 </body>
